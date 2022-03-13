@@ -22,6 +22,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="buttons.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="display.py">
       <SubType>Code</SubType>
     </Compile>

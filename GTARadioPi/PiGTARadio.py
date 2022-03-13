@@ -6,9 +6,10 @@ from mutagen.oggvorbis import OggVorbis
 from random import randint
 import os
 import time
-import pygame_gui
+import pygame_gui #https://pygame-gui.readthedocs.io/en/latest/quick_start.html
 
 #Import & setup own shit
+import buttons
 import display
 import volume
 import stations
@@ -370,6 +371,7 @@ manager = pygame_gui.UIManager((WIDTH, HEIGHT))
 window_size = pygame.display.get_window_size()
 
 #Note unlike pygame, pygame_gui rects are not (top-left, bottom-right) corners, but are (top-left, dimensions)
+"""
 vol_up_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((window_size[0] * (2/3), window_size[1] / 2), (window_size[0] / 3, window_size[1] / 4)),
                                              text='VOL ++',
                                              manager=manager)
@@ -390,6 +392,14 @@ track_up_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((window
 track_down_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((window_size[0] / 3, window_size[1] * (3/4)), (window_size[0] / 3, window_size[1] / 4)),
                                              text='TRACK --',
                                              manager=manager)
+"""
+
+vol_up_button = buttons.build_volume_up_button(manager, window_size)
+vol_down_button = buttons.build_volume_down_button(manager, window_size)
+station_up_button = buttons.build_station_up_button(manager, window_size)
+station_down_button = buttons.build_station_down_button(manager, window_size)
+track_up_button = buttons.build_track_up_button(manager, window_size)
+track_down_button = buttons.build_track_down_button(manager, window_size)
 
 is_running = True
 while is_running:
