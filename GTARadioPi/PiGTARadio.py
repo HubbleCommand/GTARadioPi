@@ -13,6 +13,7 @@ import buttons
 import display
 import volume
 import stations
+import files
 stations_dict = stations.stations
 
 pygame.init()
@@ -37,7 +38,6 @@ print("TITLE")
 print(audio.tags["TIT2"])
 print("DURATION")
 print(audio.info.length)
-
 
 path = "D:/GTA SAVE/"
 path_icons = "D:/GTA Stations Icons/"
@@ -94,35 +94,8 @@ def play_newsreel():
     pygame.mixer.music.load(path + "/NEWS/" + str(reel_number) + ".wav")
     pygame.mixer.music.play()
 
-def count_files(src):
-    #count = len([name for name in os.listdir(src) if os.path.isfile(name)])
-    count = len([name for name in os.listdir(src) if os.path.isfile(os.path.join(src, name))])
-    print("COUNT")
-    print(count)
-    return count
-
-def get_track_name(path):
-    audio = WAVE(path)
-    print("Track Name")
-    print(audio.tags["TIT2"])
-    print(type(audio.tags["TIT2"]))
-    print(str(audio.tags["TIT2"]))
-    #mutagen.id3.TIT2.
-    return str(audio.tags["TIT2"])
-
-    #print(audio.tags)
-
-    #print("ARTIST")
-    #print(audio.tags["TPE1"])
-    #print("TITLE")
-    #print(audio.tags["TIT2"])
-
-def get_track_artist(path):
-    audio = WAVE(path)
-    return str(audio.tags["TPE1"])
-
 def play_station_id(station_src):
-    id_to_play = randint(0, count_files(path + station_src + "/ID"))
+    id_to_play = randint(0, files.count_files(path + station_src + "/ID"))
     pygame.mixer.music.load(path + station_src  + "/ID/ID_" + str(id_to_play) + ".wav")
     pygame.mixer.music.play()
 
@@ -147,10 +120,10 @@ def play_talkshow_station(station_data):
         intermission_counter = randint(3, 6)
         intermission = True
         
-        show_count = count_files(path + station_data["src"] + "/MONO")
+        show_count = files.count_files(path + station_data["src"] + "/MONO")
         show_selected = randint(0, show_count - 1)
 
-        display.display_song_name(SCREEN, get_track_name(path + station_data["src"] + "/MONO/" + str(show_selected) + ".wav"))
+        display.display_song_name(SCREEN, files.get_track_name(path + station_data["src"] + "/MONO/" + str(show_selected) + ".wav"))
         display.display_artist_name(SCREEN, "")
         play_file(path + station_data["src"] + "/MONO/" + str(show_selected) + ".wav")
 
@@ -167,19 +140,19 @@ def play_advert_intro(station_src):
     global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, path
     print("ADV INTRO")
     print(path + station_src + "/TO/AD")
-    id_to_play = randint(1, count_files(path + station_src + "/TO/AD") - 1)
+    id_to_play = randint(1, files.count_files(path + station_src + "/TO/AD") - 1)
     play_file(path + station_src + "/TO/AD/TAD_" + str(id_to_play) + ".wav")
 
 def play_newsreel_intro(station_src):
     global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, path
     print("NEWS INTRO")
     print(path + station_src + "/TO/NEWS")
-    id_to_play = randint(1, count_files(path + station_src + "/TO/NEWS") - 1)
+    id_to_play = randint(1, files.count_files(path + station_src + "/TO/NEWS") - 1)
     play_file(path + station_src + "/TO/NEWS/TNEW_" + str(id_to_play) + ".wav")
 
 def play_host_snippet(station_src):
     global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, path
-    snippet_to_play = randint(0, count_files(path + station_src + "/HOST") - 1)
+    snippet_to_play = randint(0, files.count_files(path + station_src + "/HOST") - 1)
     play_file(path + station_src + "/HOST/" + str(snippet_to_play) + ".wav")
 
 def play_track_intro(station_src, song):
@@ -204,8 +177,8 @@ def play_split_station(station_data):
     print(station_data["name"])
 
     if introducing_song:
-        display.display_song_name(SCREEN, get_track_name(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
-        display.display_artist_name(SCREEN, get_track_artist(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
+        display.display_song_name(SCREEN, files.get_track_name(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
+        display.display_artist_name(SCREEN, files.get_track_artist(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
         introducing_song = False
         song_countdown -= 1
         play_file(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav")
@@ -240,12 +213,12 @@ def play_split_station(station_data):
         else:
             song_countdown = randint(3,8)
 
-            selected_song = randint(0, count_files(path + station_data["src"] + "/SONGS") - 1)
+            selected_song = randint(0, files.count_files(path + station_data["src"] + "/SONGS") - 1)
 
             song_id = selected_song
 
-            display.display_song_name(SCREEN, get_track_name(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
-            display.display_artist_name(SCREEN, get_track_artist(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
+            display.display_song_name(SCREEN, files.get_track_name(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
+            display.display_artist_name(SCREEN, files.get_track_artist(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
 
             introducing_song = True
 
@@ -255,13 +228,9 @@ def play_split_station(station_data):
                 play_track_intro(station_data["src"], song_id)
 
 ## Unsplit specific
-def unsplit_get_duration(path):
-    track_info = OggVorbis(path)
-    return track_info.info.length
-
 def play_unsplit_station(station_data):
     global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, path, stations_dict, selected_station
-    start_at = randint(0, int(unsplit_get_duration(path + stations_dict[selected_station]["src"] + "/SRC.ogg")))
+    start_at = randint(0, int(files.get_track_duration(path + stations_dict[selected_station]["src"] + "/SRC.ogg")))
 
     stations_dict[selected_station]["pos"] = start_at
     stations_dict[selected_station]["timestamp_seek_s"] = time.time()
@@ -275,15 +244,6 @@ def play_unsplit_station(station_data):
 #Main loop stuff
 def play():
     global path, path_icons, stations_dict, selected_station, SCREEN, song_name
-
-    #display.display_screen(
-    #    SCREEN, 
-    #    path_icons + stations_dict[selected_station]["icon"],
-    #    stations_dict[selected_station]["name"],
-    #    song_name
-    #)
-
-#    pygame.mixer.music.unload()
 
     current_station = stations_dict[selected_station]
     
@@ -314,7 +274,7 @@ def change_song(next):
         else:
             new_pos = current_pos - 60
 
-        track_duration_seconds = unsplit_get_duration(path + stations_dict[selected_station]["src"] + "/SRC.ogg")
+        track_duration_seconds = files.get_track_duration(path + stations_dict[selected_station]["src"] + "/SRC.ogg")
 
         print("Current position : " + str(current_pos))
         print("New Position : " + str(new_pos))
@@ -340,7 +300,7 @@ def change_song(next):
         station_data = stations_dict[selected_station]
         intermission = False
 
-        song_count = count_files(path + station_data["src"] + track_path) - 1
+        song_count = files.count_files(path + station_data["src"] + track_path) - 1
 
         if next:
             song_id += 1
@@ -352,12 +312,12 @@ def change_song(next):
         elif song_id < 0:
             song_id = song_count
 
-        display.display_song_name(SCREEN, get_track_name(path + station_data["src"] + track_path +"/" + str(song_id) + ".wav"))
+        display.display_song_name(SCREEN, files.get_track_name(path + station_data["src"] + track_path +"/" + str(song_id) + ".wav"))
 
         if stations_dict[selected_station]["type"] == 2:
             display.display_artist_name(SCREEN, "")
         else:
-            display.display_artist_name(SCREEN, get_track_artist(path + station_data["src"] + track_path + "/" + str(song_id) + ".wav"))
+            display.display_artist_name(SCREEN, files.get_track_artist(path + station_data["src"] + track_path + "/" + str(song_id) + ".wav"))
 
         play_file(path + station_data["src"] + track_path + "/" + str(song_id) + ".wav")
 

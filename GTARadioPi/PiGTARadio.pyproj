@@ -28,6 +28,9 @@
     <Compile Include="display.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="files.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PiGTARadio.py" />
     <Compile Include="stations.py">
       <SubType>Code</SubType>
