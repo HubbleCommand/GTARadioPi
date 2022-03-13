@@ -1,12 +1,20 @@
 import os
 from mutagen.wave import WAVE
 from mutagen.oggvorbis import OggVorbis
+import pygame
 
 def count_files(src):
     count = len([name for name in os.listdir(src) if os.path.isfile(os.path.join(src, name))])
     print("COUNT")
     print(count)
     return count
+
+def play_file(path):
+    #Anytime we want to play a file, we unload the previously loaded file
+    pygame.mixer.music.unload()
+
+    pygame.mixer.music.load(path)
+    pygame.mixer.music.play()
 
 def get_track_object(path):
     extension = os.path.splitext(path)[1]

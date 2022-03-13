@@ -50,54 +50,15 @@ display.display_station_icon(SCREEN, path_icons + stations_dict[selected_station
 #Unlike the Arduino version, we are going purely functional here!
 #Except we are using quite a few global variables, which isn't great...
 
-def _switch_station(up):
-    global selected_station
-    global stations_dict
-    stop()
-    global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, path, SCREEN
-    intermission = False
-    introducing_song = False
-    song_countdown = 5
-
-    if up: 
-        selected_station += 1
-    else: 
-        selected_station -= 1
-
-    if selected_station < 0:
-        selected_station = len(stations_dict) - 1
-    elif selected_station > len(stations_dict) - 1:
-        selected_station = 0
-
-    print("Selected Station")
-    print(selected_station)
-
-    display.display_station_name(SCREEN, stations_dict[selected_station]["name"])
-    display.display_station_icon(SCREEN, path_icons + stations_dict[selected_station]["icon"])
-    
-    play()
-
-def play_file(path):
-    #Anytime we want to play a file, we unload the previously loaded file
-    pygame.mixer.music.unload()
-
-    pygame.mixer.music.load(path)
-    pygame.mixer.music.play()
-
 def play_advert():
-    advert_number = randint(0,184)
-    pygame.mixer.music.load(path + "/ADS/" + str(advert_number) + ".wav")
-    pygame.mixer.music.play()
+    files.play_file(path + "/ADS/" + str(randint(0,184)) + ".wav")
 
 def play_newsreel():
-    reel_number = randint(0,176)
-    pygame.mixer.music.load(path + "/NEWS/" + str(reel_number) + ".wav")
-    pygame.mixer.music.play()
+    files.play_file(path + "/NEWS/" + str(randint(0,176)) + ".wav")
 
 def play_station_id(station_src):
     id_to_play = randint(0, files.count_files(path + station_src + "/ID"))
-    pygame.mixer.music.load(path + station_src  + "/ID/ID_" + str(id_to_play) + ".wav")
-    pygame.mixer.music.play()
+    files.play_file(path + station_src  + "/ID/ID_" + str(id_to_play) + ".wav")
 
 #Talkshow station specific
 def play_talkshow_station(station_data):
@@ -125,35 +86,33 @@ def play_talkshow_station(station_data):
 
         display.display_song_name(SCREEN, files.get_track_name(path + station_data["src"] + "/MONO/" + str(show_selected) + ".wav"))
         display.display_artist_name(SCREEN, "")
-        play_file(path + station_data["src"] + "/MONO/" + str(show_selected) + ".wav")
+        files.play_file(path + station_data["src"] + "/MONO/" + str(show_selected) + ".wav")
 
 #Split Station specific
 #TODO this should be in dict...
 introducing_song = False;
-intermission = False;
-intermission_counter = 0;
+intermission = True;
+intermission_counter = 3;
 song_countdown = 5;
 song_id = 0;
 news = False;
 
 def play_advert_intro(station_src):
     global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, path
-    print("ADV INTRO")
-    print(path + station_src + "/TO/AD")
+    print("ADV INTRO : " + path + station_src + "/TO/AD")
     id_to_play = randint(1, files.count_files(path + station_src + "/TO/AD") - 1)
-    play_file(path + station_src + "/TO/AD/TAD_" + str(id_to_play) + ".wav")
+    files.play_file(path + station_src + "/TO/AD/TAD_" + str(id_to_play) + ".wav")
 
 def play_newsreel_intro(station_src):
     global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, path
-    print("NEWS INTRO")
-    print(path + station_src + "/TO/NEWS")
+    print("NEWS INTRO : " + path + station_src + "/TO/NEWS")
     id_to_play = randint(1, files.count_files(path + station_src + "/TO/NEWS") - 1)
-    play_file(path + station_src + "/TO/NEWS/TNEW_" + str(id_to_play) + ".wav")
+    files.play_file(path + station_src + "/TO/NEWS/TNEW_" + str(id_to_play) + ".wav")
 
 def play_host_snippet(station_src):
     global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, path
     snippet_to_play = randint(0, files.count_files(path + station_src + "/HOST") - 1)
-    play_file(path + station_src + "/HOST/" + str(snippet_to_play) + ".wav")
+    files.play_file(path + station_src + "/HOST/" + str(snippet_to_play) + ".wav")
 
 def play_track_intro(station_src, song):
     global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, path
@@ -170,7 +129,7 @@ def play_track_intro(station_src, song):
         local_count += 1
 
     intro_to_play = randint(1, local_count)
-    play_file(path + station_src + "/INTRO/" + str(song) + "_" + str(intro_to_play) + ".wav")
+    files.play_file(path + station_src + "/INTRO/" + str(song) + "_" + str(intro_to_play) + ".wav")
 
 def play_split_station(station_data):
     global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, path
@@ -181,7 +140,7 @@ def play_split_station(station_data):
         display.display_artist_name(SCREEN, files.get_track_artist(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
         introducing_song = False
         song_countdown -= 1
-        play_file(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav")
+        files.play_file(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav")
 
     elif intermission:
         display.display_song_name(SCREEN, "")
@@ -213,9 +172,7 @@ def play_split_station(station_data):
         else:
             song_countdown = randint(3,8)
 
-            selected_song = randint(0, files.count_files(path + station_data["src"] + "/SONGS") - 1)
-
-            song_id = selected_song
+            song_id = randint(0, files.count_files(path + station_data["src"] + "/SONGS") - 1)
 
             display.display_song_name(SCREEN, files.get_track_name(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
             display.display_artist_name(SCREEN, files.get_track_artist(path + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
@@ -237,7 +194,6 @@ def play_unsplit_station(station_data):
 
     display.display_song_name(SCREEN, "")
     display.display_artist_name(SCREEN, "")
-    print(station_data["name"])
     pygame.mixer.music.load(path + station_data["src"] + "/SRC.ogg")
     pygame.mixer.music.play(start = start_at)
 
@@ -253,6 +209,35 @@ def play():
         play_split_station(current_station)
     elif current_station["type"] == 2:
         play_talkshow_station(current_station)
+
+def stop():
+    pygame.mixer.music.stop()
+
+def _switch_station(up):
+    global selected_station
+    global stations_dict
+    stop()
+    global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, path, SCREEN
+    intermission = False
+    introducing_song = False
+    song_countdown = 5
+
+    if up: 
+        selected_station += 1
+    else: 
+        selected_station -= 1
+
+    if selected_station < 0:
+        selected_station = len(stations_dict) - 1
+    elif selected_station > len(stations_dict) - 1:
+        selected_station = 0
+
+    print("Selected Station : " + str(selected_station))
+
+    display.display_station_name(SCREEN, stations_dict[selected_station]["name"])
+    display.display_station_icon(SCREEN, path_icons + stations_dict[selected_station]["icon"])
+    
+    play()
 
 def change_song(next):
     global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, path, stations_dict, selected_station
@@ -319,10 +304,7 @@ def change_song(next):
         else:
             display.display_artist_name(SCREEN, files.get_track_artist(path + station_data["src"] + track_path + "/" + str(song_id) + ".wav"))
 
-        play_file(path + station_data["src"] + track_path + "/" + str(song_id) + ".wav")
-
-def stop():
-    pygame.mixer.music.stop()
+        files.play_file(path + station_data["src"] + track_path + "/" + str(song_id) + ".wav")
 
 #Button setup
 clock = pygame.time.Clock()
@@ -349,8 +331,6 @@ while is_running:
              is_running = False
         
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            #if event.ui_element == hello_button:
-            #    print('Hello World!')
             if event.ui_element == track_up_button:
                 change_song(True)
             if event.ui_element == track_down_button:
@@ -365,7 +345,6 @@ while is_running:
                 volume.increase()
             if event.ui_element == vol_down_button:
                 volume.decrease()
-
         
         manager.process_events(event)
 
