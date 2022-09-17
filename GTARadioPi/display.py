@@ -34,30 +34,6 @@ def aspect_scale(img, bx, by):
 
     return pygame.transform.scale(img, (sx,sy))
 
-def display_screen_old():
-    global path, path_icons, stations_dict, selected_station, SCREEN
-    if "icon" in stations_dict[selected_station]:
-        #SCREEN.fill((255,255,255))
-        station_icon = pygame.image.load(path_icons + stations_dict[selected_station]["icon"])
-        position = (0,0)
-
-        # Resize image
-        #station_icon = pygame.transform.scale(station_icon, (128, 128))
-
-        #Resize image keeping aspect ration, and center it
-        station_icon = aspect_scale(station_icon, 128, 128)
-
-        if station_icon.get_width() < 128:
-            #If not wide enough to fit icon area, we set the position to the center
-            position = ((128 - station_icon.get_width()) / 2 , position[1])
-        if station_icon.get_height() < 128:
-            position = (position[0], (128 - station_icon.get_height()) / 2)
-
-        SCREEN.blit(station_icon, position)
-        pygame.display.flip()
-    else:
-        print("NO ICON")
-
 def display_screen(screen, icon_path, station_name, song_name):
     #screen.fill((255,255,255))
     station_icon = pygame.image.load(icon_path)
@@ -74,92 +50,6 @@ def display_screen(screen, icon_path, station_name, song_name):
 
     screen.blit(station_icon, position)
     pygame.display.flip()
-
-
-def display_station_icon_old(screen, icon_path):
-    station_icon = pygame.image.load(icon_path)
-    position = (0,0)
-
-    window_size = pygame.display.get_window_size()
-    icon_size = window_size[0] / 2
-
-    #We draw over the previous icon, as GTA IV station icons have transparency
-    pygame.draw.rect(screen, (0,0,0), pygame.Rect((0, 0),(128, 128)))
-
-    #Resize image keeping aspect ration, and center it
-    station_icon = aspect_scale(station_icon, 128, 128)
-
-    if station_icon.get_width() < 128:
-        #If not wide enough to fit icon area, we set the position to the center
-        position = ((128 - station_icon.get_width()) / 2 , position[1])
-    if station_icon.get_height() < 128:
-        position = (position[0], (128 - station_icon.get_height()) / 2)
-
-    screen.blit(station_icon, position)
-    #pygame.display.update(pygame.Rect((0, 0),(128, 128)))
-    pygame.display.flip()
-
-def display_song_name_old(screen, song_name):
-    global song_font
-
-    #if not isinstance(song_name, bytes) and not isinstance(song_name, str) and not isinstance(song_name, type(u"")):
-    if not song_name:
-        print("PASSED WRONG TYPE FOR SONG NAME")
-        song_name = ""
-        #return
-
-    #screen.fill((255,255,255))
-    #We display the song name at a fixed position...
-    print("TRYING TO DISPLAY")
-    print(song_name)
-    img = song_font.render(song_name, True, (255, 255, 255))
-
-    #pygame.draw.rect(img, BLUE, rect, 1)
-    pygame.draw.rect(screen, (0,0,0), pygame.Rect((144, 50),(500, 80)))  #We draw over the previous title
-    screen.blit(img, (144, 50))
-    #pygame.display.update(pygame.Rect((144, 0),(256, 50)))
-    pygame.display.flip()
-
-def display_artist_name_old(screen, artist_name):
-    global song_font
-    return
-    #We display the song name at a fixed position...
-    print("TRYING TO DISPLAY")
-    print(artist_name)
-    img = song_font.render(str(artist_name), True, (255, 255, 255))
-
-    pygame.draw.rect(screen, (0,0,0), pygame.Rect((144, 50),(500, 80)))  #We draw over the previous title
-    screen.blit(img, (144, 50))
-    pygame.display.flip()
-
-def display_station_name_old(screen, station_name):
-    global station_font
-    #We display the station name at a fixed position...
-    img = station_font.render(station_name, True, (255, 255, 255))
-
-    
-    pygame.draw.rect(screen, (0,0,0), pygame.Rect((144, 0),(500, 50)))  #We draw over the previous title
-    screen.blit(img, (144, 0))
-    pygame.display.flip()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 def display_station_icon(screen, icon_path):
     station_icon = pygame.image.load(icon_path)
