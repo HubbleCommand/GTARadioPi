@@ -29,16 +29,6 @@ SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 
 print(pygame.display.get_window_size())
 
-audio = WAVE('D:/GTA SAVE/RAIN.wav')
-print(audio.tags)
-
-print("ARTIST")
-print(audio.tags["TPE1"])
-print("TITLE")
-print(audio.tags["TIT2"])
-print("DURATION")
-print(audio.info.length)
-
 path = "D:/GTA SAVE/"
 path_icons = "D:/GTA Stations Icons/"
 selected_station = randint(0, len(stations_dict) - 1) #6
