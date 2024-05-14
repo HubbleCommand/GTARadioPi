@@ -1,26 +1,15 @@
-from genericpath import isfile
-import pygame
-import mutagen
-from mutagen.wave import WAVE
-from mutagen.oggvorbis import OggVorbis
-#Now just using pygame as keyboard is hella buggy, and lags other parts of the computer!
 from random import randint
-import os
 import time
+import pygame
 import pygame_gui #https://pygame-gui.readthedocs.io/en/latest/quick_start.html
 import argparse
 
-
-#Import & setup own shit
 import buttons
 import display
 import volume
-import stations
 import files
 import play
-from enum import Enum
-
-stations_dict = stations.stations
+from state import current_station, current_station_state, root_dir, make_default_state
 
 pygame.init()
 pygame.mixer.init()
