@@ -12,39 +12,37 @@ def advert(path):
 def newsreel(path):
     files.play_file(path + "/NEWS/" + str(randint(0,176)) + ".wav")
 
-def station_id(path, station_src):
-    id_to_play = randint(0, files.count_files(path + station_src + "/ID"))
-    files.play_file(path + station_src  + "/ID/ID_" + str(id_to_play) + ".wav")
-
-
+def station_id(path):
+    id_to_play = randint(1, files.count_files(path + "/ID"))
+    files.play_file(path   + "/ID/ID_" + str(id_to_play) + ".wav")
 
 # Split station play
-def advert_intro(root, station_src):
-    print("ADV INTRO : " + root + station_src + "/TO/AD")
-    id_to_play = randint(1, files.count_files(root + station_src + "/TO/AD") - 1)
-    files.play_file(root + station_src + "/TO/AD/TAD_" + str(id_to_play) + ".wav")
+def advert_intro(path):
+    print("ADV INTRO : " + path + "/TO/AD")
+    id_to_play = randint(1, files.count_files(path + "/TO/AD") - 1)
+    files.play_file(path + "/TO/AD/TAD_" + str(id_to_play) + ".wav")
 
-def newsreel_intro(root, station_src):
-    print("NEWS INTRO : " + root + station_src + "/TO/NEWS")
-    id_to_play = randint(1, files.count_files(root + station_src + "/TO/NEWS") - 1)
-    files.play_file(root + station_src + "/TO/NEWS/TNEW_" + str(id_to_play) + ".wav")
+def newsreel_intro(path):
+    print("NEWS INTRO : " + path + "/TO/NEWS")
+    id_to_play = randint(1, files.count_files(path + "/TO/NEWS") - 1)
+    files.play_file(path + "/TO/NEWS/TNEW_" + str(id_to_play) + ".wav")
     
-def host_snippet(root, station_src):
-    snippet_to_play = randint(0, files.count_files(root + station_src + "/HOST") - 1)
-    files.play_file(root + station_src + "/HOST/" + str(snippet_to_play) + ".wav")
+def host_snippet(path):
+    snippet_to_play = randint(0, files.count_files(path + "/HOST") - 1)
+    files.play_file(path + "/HOST/" + str(snippet_to_play) + ".wav")
     
-def track_intro(root, station_src, song):
+def track_intro(path, song):
     #count = len[f for f in os.listdir(path + station_src + "/INTRO") if f]
 
     #As naming starts @ 1, we check if one even exists
-    if not os.path.exists(root + station_src + "/INTRO/" + str(song) + "_" + str(1) + ".wav"):
+    if not os.path.exists(path + "/INTRO/" + str(song) + "_" + str(1) + ".wav"):
         return
 
     local_count = 1
 
     #count = len([name for name in os.listdir(src) if os.path.isfile(os.path.join(src, name))])
-    while os.path.exists(root + station_src + "/INTRO/" + str(song) + "_" + str(local_count - 1) + ".wav"):
+    while os.path.exists(path + "/INTRO/" + str(song) + "_" + str(local_count - 1) + ".wav"):
         local_count += 1
 
     intro_to_play = randint(1, local_count)
-    files.play_file(root + station_src + "/INTRO/" + str(song) + "_" + str(intro_to_play) + ".wav")
+    files.play_file(path + "/INTRO/" + str(song) + "_" + str(intro_to_play) + ".wav")
