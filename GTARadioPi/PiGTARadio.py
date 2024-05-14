@@ -15,6 +15,7 @@ pygame.init()
 pygame.mixer.init()
 
 ##############################
+PATH = ""
 WIDTH  = 480
 HEIGHT = 320
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT)) #For fullscreen, add ´, pygame.FULLSCREEN)´
@@ -270,6 +271,11 @@ def main():
 
     display.display_station_name(SCREEN, stations_dict[selected_station]["name"])
     display.display_station_icon(SCREEN, PATH_STATIONS + stations_dict[selected_station]["src"] + "/icon.png")
+    if not args.directory and not PATH:
+        print("Directory required")
+        return
+    if args.directory:
+        PATH = args.directory
 
     is_running = True
     while is_running:
