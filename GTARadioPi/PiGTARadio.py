@@ -21,174 +21,148 @@ HEIGHT = 320
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT)) #For fullscreen, add ´, pygame.FULLSCREEN)´
 ##############################
 
-PATH_STATIONS = PATH + "/STATIONS/"
-
-##############################
-
-#This shouldn't be used...
-selected_station = randint(0, len(stations_dict) - 1) #6
-selected_station = 22
-
-#Split Station specific
-#TODO this should be in dict...
-introducing_song = False
-intermission = True
-intermission_counter = 3
-song_countdown = 1
-song_id = 0
-news = False
-
-def play_split_station(station_data):
-    global introducing_song, intermission, intermission_counter, song_countdown, song_id, news
-    print(station_data["name"])
-
-    if introducing_song:
-        display.display_song_name(SCREEN, files.get_track_name(PATH_STATIONS + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
-        display.display_artist_name(SCREEN, files.get_track_artist(PATH_STATIONS + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
-        introducing_song = False
-        song_countdown -= 1
-        files.play_file(PATH_STATIONS + station_data["src"] + "/SONGS/" + str(song_id) + ".wav")
-
-    elif intermission:
+def play_split_station(state: dict) -> dict:
+    if current_station_state(state)["introducing_track"]:
+        display.display_song_name(SCREEN, files.get_track_name(current_station(state)["src"] + "/SONGS/" + str(current_station_state(state)["track_id"]) + ".wav"))
+        display.display_artist_name(SCREEN, files.get_track_artist(current_station(state)["src"] + "/SONGS/" + str(current_station_state(state)["track_id"]) + ".wav"))
+        state["stations"][state["current"]]["state"]["introducing_track"] = False
+        state["stations"][state["current"]]["state"]["track_countdown"] -= 1
+        files.play_file(current_station(state)["src"] + "/SONGS/" + str(current_station(state)["state"]["track_id"]) + ".wav")
+    elif current_station_state(state)["intermission"]:
         display.display_song_name(SCREEN, "")
         display.display_artist_name(SCREEN, "")
-        if intermission_counter <= 0:
-            intermission = False
-            play.station_id(PATH_STATIONS, station_data["src"])
+        if state["stations"][state["current"]]["state"]["intermission_cnt"] <= 0:
+            state["stations"][state["current"]]["state"]["intermission"] = False
+            play.station_id(current_station(state)["src"])
         else:
-            intermission_counter -= 1
-            if news:
-                play.newsreel(PATH)
+            state["stations"][state["current"]]["state"]["intermission_cnt"] -= 1
+            if state["stations"][state["current"]]["state"]["news"]:
+                play.newsreel(root_dir(state))
             else:
-                play.advert(PATH)
+                play.advert(root_dir(state))
     else:
-        print("ELSE")
-        if song_countdown <= 0:
+        if current_station_state(state)["track_countdown"] <= 0:
             display.display_song_name(SCREEN, "")
             display.display_artist_name(SCREEN, "")
-            intermission = True
-
+            state["stations"][state["current"]]["state"]["intermission"] = True
+            state["stations"][state["current"]]["state"]["track_countdown"] = randint(3,8) #prep next programming
             if(randint(0, 6) > 2):
-                news = False
-                intermission_counter = randint(3, 6)
-                play.advert_intro(PATH_STATIONS, station_data["src"])
+                state["stations"][state["current"]]["state"]["news"] = False
+                state["stations"][state["current"]]["state"]["intermission_cnt"] = randint(3, 6)
+                play.advert_intro(current_station(state)["src"])
             else:
-                news = True
-                intermission_counter = randint(1, 4)
-                play.newsreel_intro(PATH_STATIONS, station_data["src"])
+                state["stations"][state["current"]]["state"]["news"] = True
+                state["stations"][state["current"]]["state"]["intermission_cnt"] = randint(1, 4)
+                play.newsreel_intro(current_station(state)["src"])
         else:
-            song_countdown = randint(3,8)
+            #state["stations"][state["current"]]["state"]["track_countdown"] = randint(3,8)
+            print("Track countdown: ", state["stations"][state["current"]]["state"]["track_countdown"])
+            state["stations"][state["current"]]["state"]["track_id"] = randint(0, files.count_files(current_station(state)["src"] + "/SONGS") - 1)
 
-            song_id = randint(0, files.count_files(PATH_STATIONS + station_data["src"] + "/SONGS") - 1)
+            display.display_song_name(SCREEN, files.get_track_name(current_station(state)["src"] + "/SONGS/" + str(current_station_state(state)["track_id"]) + ".wav"))
+            display.display_artist_name(SCREEN, files.get_track_artist(current_station(state)["src"] + "/SONGS/" + str(current_station_state(state)["track_id"]) + ".wav"))
 
-            display.display_song_name(SCREEN, files.get_track_name(PATH_STATIONS + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
-            display.display_artist_name(SCREEN, files.get_track_artist(PATH_STATIONS + station_data["src"] + "/SONGS/" + str(song_id) + ".wav"))
-
-            introducing_song = True
+            state["stations"][state["current"]]["state"]["introducing_track"] = True
 
             if randint(0, 10) > 7:
-                play.host_snippet(PATH_STATIONS, station_data["src"])
+                play.host_snippet(current_station(state)["src"])
             else:
-                play.track_intro(PATH_STATIONS, station_data["src"], song_id)
+                play.track_intro(current_station(state)["src"], current_station_state(state)["track_id"])
+    return state
 
-def play_talkshow_station(station_data):
-    global intermission, intermission_counter
-    print(station_data["name"])
+def play_talkshow_station(state: dict) -> dict:
+    print(current_station(state)["name"])
 
-    if intermission:
+    if current_station_state(state)["intermission"]:
         display.display_song_name(SCREEN, "")
         display.display_artist_name(SCREEN, "")
-        if intermission_counter <= 0:
-            intermission = False
-            play.station_id(station_data["src"])
+        if current_station_state(state)["intermission_cnt"] <= 0:
+            state["stations"][state["current"]]["state"]["intermission"] = False
+            play.station_id(current_station(state)["src"])
         else:
-            intermission_counter -= 1
+            state["stations"][state["current"]]["state"]["intermission_cnt"] -= 1
             if randint(0, 2) > 1:
-                play.newsreel()
+                play.newsreel(root_dir(state))
             else:
-                play.advert()
+                play.advert(root_dir(state))
     else:
-        intermission_counter = randint(3, 6)
-        intermission = True
+        state["stations"][state["current"]]["state"]["intermission_cnt"] = randint(3, 6)
+        state["stations"][state["current"]]["state"]["intermission"] = True
         
-        show_count = files.count_files(PATH_STATIONS + station_data["src"] + "/MONO")
-        show_selected = randint(0, show_count - 1)
+        show_count = files.count_files(current_station(state)["src"] + "/MONO")
+        state["stations"][state["current"]]["state"]["track_id"] = randint(0, show_count - 1)
 
-        display.display_song_name(SCREEN, files.get_track_name(PATH_STATIONS + station_data["src"] + "/MONO/" + str(show_selected) + ".wav"))
+        display.display_song_name(SCREEN, files.get_track_name(current_station(state)["src"] + "/MONO/" + str(current_station_state(state)["track_id"]) + ".wav"))
         display.display_artist_name(SCREEN, "")
-        files.play_file(PATH_STATIONS + station_data["src"] + "/MONO/" + str(show_selected) + ".wav")
+        files.play_file(current_station(state)["src"] + "/MONO/" + str(current_station_state(state)["track_id"]) + ".wav")
+    return state
 
-def play_unsplit_station(station_data):
-    global stations_dict
-    start_at = randint(0, int(files.get_track_duration(PATH_STATIONS + stations_dict[selected_station]["src"] + "/SRC.ogg")))
+def play_unsplit_station(state: dict) -> dict:
+    start_at = randint(0, int(files.get_track_duration(current_station(state)["src"] + "/SRC.ogg")))
 
-    stations_dict[selected_station]["pos"] = start_at
-    stations_dict[selected_station]["timestamp_seek_s"] = time.time()
+    state["stations"][state["current"]]["state"]["pos"] = start_at
+    state["stations"][state["current"]]["state"]["timestamp_seek_s"] = time.time()
 
     display.display_song_name(SCREEN, "")
     display.display_artist_name(SCREEN, "")
-    pygame.mixer.music.load(PATH_STATIONS + station_data["src"] + "/SRC.ogg")
+    pygame.mixer.music.load(current_station(state)["src"] + "/SRC.ogg")
     pygame.mixer.music.play(start = start_at)
+    return state
 
-#Main loop stuff
-def play_station():
-    current_station = stations_dict[selected_station]
-    
-    if current_station["type"] == 0:
-        play_unsplit_station(current_station)
-    elif current_station["type"] == 1:
-        play_split_station(current_station)
-    elif current_station["type"] == 2:
-        play_talkshow_station(current_station)
+def play_station(state: dict) -> dict:
+    if current_station(state)["type"] == 0:
+        return play_unsplit_station(state)
+    elif current_station(state)["type"] == 1:
+        return play_split_station(state)
+    elif current_station(state)["type"] == 2:
+        return play_talkshow_station(state)
+    print("INVALID FALLTHROUGH")
+    pygame.quit()
+    return state
 
 def stop():
     pygame.mixer.music.stop()
 
-def switch_station(up):
-    global selected_station, introducing_song, intermission, song_countdown
+def switch_station(state: dict, up: bool) -> dict:
     stop()
-    intermission = False
-    introducing_song = False
-    song_countdown = 5
 
-    if up: 
-        selected_station += 1
+    #TODO update state based on when last opened...
+
+    if up:
+        state["current"] += 1
     else: 
-        selected_station -= 1
+        state["current"] -= 1
 
-    if selected_station < 0:
-        selected_station = len(stations_dict) - 1
-    elif selected_station > len(stations_dict) - 1:
-        selected_station = 0
+    if state["current"] < 0:
+        state["current"] = len(state["stations"]) - 1
+    elif state["current"] > len(state["stations"]) - 1:
+        state["current"] = 0
 
-    print("Selected Station : " + str(selected_station))
-
-    display.display_station_name(SCREEN, stations_dict[selected_station]["name"])
-    display.display_station_icon(SCREEN, PATH_STATIONS + stations_dict[selected_station]["src"] + "/icon.png")
+    print("Selected Station : " + str(state["current"]))
+    display.display_station_name(SCREEN, current_station(state)["name"])
+    display.display_station_icon(SCREEN, current_station(state)["src"] + "/icon.png")
     
-    play_station()
+    return play_station(state)
 
-def change_song(next):
-    global intermission, song_id, stations_dict
-
-    if stations_dict[selected_station]["type"] == 0:
-        if not "pos" in stations_dict[selected_station]:
-            stations_dict[selected_station]["pos"] = 0
-        if not "timestamp_seek_s" in stations_dict[selected_station]:
-            stations_dict[selected_station]["timestamp_seek_s"] = time.time()
+def change_song(state: dict, next: bool) -> dict:
+    if current_station(state)["type"] == 0:
+        if not "pos" in current_station(state):
+            state["stations"][state["current"]]["pos"] = 0
+        if not "timestamp_seek_s" in current_station(state):
+            state["stations"][state["current"]]["timestamp_seek_s"] = time.time()
 
         print("UNSPLIT, SETTING POS")
 
         #get_pos returns how long it has been playing, not the position 
         #We find how much time has elapsed since we started playing the unsplit station, adding the last set position / seek position of the track
-        current_pos = (time.time() - stations_dict[selected_station]["timestamp_seek_s"]) + stations_dict[selected_station]["pos"]
+        current_pos = (time.time() - current_station(state)["timestamp_seek_s"]) + current_station(state)["pos"]
 
         if next:
             new_pos = current_pos + 60
         else:
             new_pos = current_pos - 60
 
-        track_duration_seconds = files.get_track_duration(PATH_STATIONS + stations_dict[selected_station]["src"] + "/SRC.ogg")
+        track_duration_seconds = files.get_track_duration(current_station(state)["src"] + "/SRC.ogg")
 
         print("Current position : " + str(current_pos))
         print("New Position : " + str(new_pos))
@@ -200,22 +174,22 @@ def change_song(next):
         while new_pos < 0:
             new_pos += track_duration_seconds
 
-        stations_dict[selected_station]["pos"] = new_pos
+        state["stations"][state["current"]]["pos"] = new_pos
         pygame.mixer.music.set_pos(new_pos)
 
-    elif stations_dict[selected_station]["type"] == 1 or stations_dict[selected_station]["type"] == 2:
+    elif current_station(state)["type"] == 1 or current_station(state)["type"] == 2:
         print("CHANING TYPE 1 and 2")
         stop()
 
+        state["stations"][state["current"]]["intermission"] = False
+
         track_path = "/SONGS"
-        if stations_dict[selected_station]["type"] == 2:
+        if current_station(state)["type"] == 2:
             track_path = "/MONO"
 
-        station_data = stations_dict[selected_station]
-        intermission = False
+        song_count = files.count_files(current_station(state)["src"] + track_path) - 1
 
-        song_count = files.count_files(PATH_STATIONS + station_data["src"] + track_path) - 1
-
+        song_id = current_station_state(state)["track_id"]
         if next:
             song_id += 1
         else:
@@ -225,17 +199,18 @@ def change_song(next):
             song_id = 0
         elif song_id < 0:
             song_id = song_count
+        state["stations"][state["current"]]["state"]["track_id"] = song_id
 
-        display.display_song_name(SCREEN, files.get_track_name(PATH_STATIONS + station_data["src"] + track_path +"/" + str(song_id) + ".wav"))
+        display.display_song_name(SCREEN, files.get_track_name(current_station(state)["src"] + track_path +"/" + str(song_id) + ".wav"))
 
-        if stations_dict[selected_station]["type"] == 2:
+        if current_station(state)["type"] == 2:
             display.display_artist_name(SCREEN, "")
         else:
-            display.display_artist_name(SCREEN, files.get_track_artist(PATH_STATIONS + station_data["src"] + track_path + "/" + str(song_id) + ".wav"))
+            display.display_artist_name(SCREEN, files.get_track_artist(current_station(state)["src"] + track_path + "/" + str(song_id) + ".wav"))
 
-        files.play_file(PATH_STATIONS + station_data["src"] + track_path + "/" + str(song_id) + ".wav")
+        files.play_file(current_station(state)["src"] + track_path + "/" + str(song_id) + ".wav")
+    return state
 
-#These global vars are fine, they are immutable
 #Button setup
 CLOCK = pygame.time.Clock()
 MANAGER = pygame_gui.UIManager((WIDTH, HEIGHT))
@@ -256,7 +231,6 @@ SEEKER = pygame_gui.elements.UIHorizontalSlider(
 SEEKER.hide()
 
 def main():
-    print("MAIN")
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--directory", help="directory with the station audio", type=str)
     parser.add_argument("--width", help="screen width in pixels", type=int)
@@ -266,21 +240,20 @@ def main():
 
     if args.width and not args.height or args.height and not args.width:
         parser.error("When defining screen size, both width and height are required")
-    
-    files.load_path(PATH)
 
-    display.display_station_name(SCREEN, stations_dict[selected_station]["name"])
-    display.display_station_icon(SCREEN, PATH_STATIONS + stations_dict[selected_station]["src"] + "/icon.png")
     if not args.directory and not PATH:
         print("Directory required")
         return
     if args.directory:
         PATH = args.directory
+    
+    state = make_default_state(PATH)
+    state = switch_station(state, True)
 
     is_running = True
     while is_running:
         if not pygame.mixer.music.get_busy():
-            play_station()
+            state = play_station(state)
 
         time_delta = CLOCK.tick(60)/1000.0
 
@@ -290,14 +263,14 @@ def main():
             
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == BTN_TRACK_UP:
-                    change_song(True)
+                    state = change_song(state, True)
                 if event.ui_element == BTN_TRACK_DWN:
-                    change_song(False)
+                    state = change_song(state, False)
 
                 if event.ui_element == BTN_STATION_UP:
-                    switch_station(True)
+                    state= switch_station(state, True)
                 if event.ui_element == BTN_STATION_DWN:
-                    switch_station(False)
+                    state = switch_station(state, False)
 
                 if event.ui_element == BTN_VOL_UP:
                     volume.increase()
