@@ -1,10 +1,12 @@
 ### Utility methods for managing the main application state """
 import files
+from random import randint
 
 def make_default_state(root_dir: str) -> dict:
+    stations = files.load_path(root_dir)
     return {
-        "current": 0,   # Current station index
-        "stations": files.load_path(root_dir),   # List of stations & their respective states,
+        "current": randint(0, len(stations) - 1),   # Current station index
+        "stations": stations,   # List of stations & their respective states,
         "root": root_dir
     }
 
