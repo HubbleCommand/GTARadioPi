@@ -255,23 +255,23 @@ def change_song(next):
 
 #These global vars are fine, they are immutable
 #Button setup
-clock = pygame.time.Clock()
-manager = pygame_gui.UIManager((WIDTH, HEIGHT))
-window_size = pygame.display.get_window_size()
+CLOCK = pygame.time.Clock()
+MANAGER = pygame_gui.UIManager((WIDTH, HEIGHT))
+WNDW_SIZE = pygame.display.get_window_size()
 
-vol_up_button = buttons.build_volume_up_button(manager, window_size)
-vol_down_button = buttons.build_volume_down_button(manager, window_size)
-station_up_button = buttons.build_station_up_button(manager, window_size)
-station_down_button = buttons.build_station_down_button(manager, window_size)
-track_up_button = buttons.build_track_up_button(manager, window_size)
-track_down_button = buttons.build_track_down_button(manager, window_size)
+BTN_VOL_UP = buttons.build_volume_up_button(MANAGER, WNDW_SIZE)
+BTN_VOL_DWN = buttons.build_volume_down_button(MANAGER, WNDW_SIZE)
+BTN_STATION_UP = buttons.build_station_up_button(MANAGER, WNDW_SIZE)
+BTN_STATION_DWN = buttons.build_station_down_button(MANAGER, WNDW_SIZE)
+BTN_TRACK_UP = buttons.build_track_up_button(MANAGER, WNDW_SIZE)
+BTN_TRACK_DWN = buttons.build_track_down_button(MANAGER, WNDW_SIZE)
 
-seeker = pygame_gui.elements.UIHorizontalSlider(
-    relative_rect=pygame.Rect((window_size[0] * (2/3), window_size[1] / 2), (window_size[0] / 3, window_size[1] / 4)),
+SEEKER = pygame_gui.elements.UIHorizontalSlider(
+    relative_rect=pygame.Rect((WNDW_SIZE[0] * (2/3), WNDW_SIZE[1] / 2), (WNDW_SIZE[0] / 3, WNDW_SIZE[1] / 4)),
     start_value=0,
     value_range=(0,10),
-    manager=manager)
-seeker.hide()
+    manager=MANAGER)
+SEEKER.hide()
 
 def main():
     print("MAIN")
@@ -295,26 +295,26 @@ def main():
         if not pygame.mixer.music.get_busy():
             play_station()
 
-        time_delta = clock.tick(60)/1000.0
+        time_delta = CLOCK.tick(60)/1000.0
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 is_running = False
             
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == track_up_button:
+                if event.ui_element == BTN_TRACK_UP:
                     change_song(True)
-                if event.ui_element == track_down_button:
+                if event.ui_element == BTN_TRACK_DWN:
                     change_song(False)
 
-                if event.ui_element == station_up_button:
+                if event.ui_element == BTN_STATION_UP:
                     switch_station(True)
-                if event.ui_element == station_down_button:
+                if event.ui_element == BTN_STATION_DWN:
                     switch_station(False)
 
-                if event.ui_element == vol_up_button:
+                if event.ui_element == BTN_VOL_UP:
                     volume.increase()
-                if event.ui_element == vol_down_button:
+                if event.ui_element == BTN_VOL_DWN:
                     volume.decrease()
             
             if event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
@@ -324,7 +324,7 @@ def main():
                 #so would need to get it every time the audio changes
                 #pygame.mixer.music.set_pos(event.value)
             
-            manager.process_events(event)
+            MANAGER.process_events(event)
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_n:
@@ -340,8 +340,8 @@ def main():
                     print("Key K has been pressed prev song")
                     change_song(False)
 
-        manager.update(time_delta)
-        manager.draw_ui(SCREEN)
+        MANAGER.update(time_delta)
+        MANAGER.draw_ui(SCREEN)
         pygame.display.update()
 
 if __name__ == "__main__":
