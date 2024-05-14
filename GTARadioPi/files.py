@@ -4,6 +4,7 @@ from mutagen.oggvorbis import OggVorbis
 import pygame
 from enum import Enum
 import json
+import random
 
 def count_files(src) -> int:
     count = len([name for name in os.listdir(src) if os.path.isfile(os.path.join(src, name))])
@@ -41,9 +42,9 @@ def get_track_duration(path):
     return track_info.info.length
 
 def read_station_name(path: str) -> str:
-    if not os.path.exists(path + "name.txt"):
+    if not os.path.exists(os.path.join(path, "name.txt")):
         return ""
-    file = open(path + "name.txt", 'r')
+    file = open(os.path.join(path, "name.txt"), 'r')
     name = file.read()
     file.close()
     return name
@@ -55,14 +56,14 @@ class Station(Enum):
 #Station = Enum('Station', ['UNSPLIT', 'SPLIT', 'TALKSHOW'])
 def determine_station_type(path: str) -> Station|int:
     #type is 0,1,2 (unsplit, split, talkshow)
-    if os.path.exists(path + "SRC.wav"):
-        return Station.UNSPLIT
+    if os.path.exists(os.path.join(path, "SRC.wav")):
+        return 0 #Station.UNSPLIT
     
-    if os.path.exists(path + "SONGS/"):
-        return Station.SPLIT
+    if os.path.exists(os.path.join(path, "SONGS")):
+        return 1#Station.SPLIT
     
-    if os.path.exists(path + "MONO/"):
-        return Station.TALKSHOW
+    if os.path.exists(os.path.join(path, "MONO")):
+        return 2#Station.TALKSHOW
     
     return -1
 
@@ -73,4 +74,45 @@ def load_path(path: str) -> list:
     
     dirs = [dir for dir in os.listdir(path) if os.path.isdir(os.path.join(path, dir))]
     print(dirs)
-    
+
+    ret = []
+    stations_dir = os.path.join(path, "STATIONS")
+    stations = [dir for dir in os.listdir(stations_dir) if os.path.isdir(os.path.join(stations_dir, dir))]
+    for station in stations:
+        path_abs = os.path.join(path, "STATIONS", station)
+        
+        name    = read_station_name(path_abs)
+        type    = determine_station_type(path_abs)
+
+        #Initialize various state members based on type
+        if type == 0:
+            #State will be initialized during playback
+            state = {}
+        elif type == 1:
+            state = {
+                #"intermission": bool(random.getrandbits(1)),
+                "intermission": True,
+                "news":  bool(random.getrandbits(1)),
+                "intermission_cnt": 3,
+                "track_countdown": 1, ##only type 1 ?
+                
+                "introducing_track": False,
+                "track_id": 1,
+            }
+        elif type == 2: #pretty sure it's the same? just some slight variations in number of ads etc
+            state = {
+                "intermission": bool(random.getrandbits(1)),
+                "news":  bool(random.getrandbits(1)),
+                "intermission_cnt": 5,
+                
+                "track_id": 1,
+            }
+
+        ret.append({
+            "type": type,
+            "name": name,
+            "src":  path_abs,
+            "state": state
+        })
+
+    return ret
