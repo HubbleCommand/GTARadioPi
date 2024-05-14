@@ -57,7 +57,7 @@ song_id = 0
 news = False
 
 def play_split_station(station_data):
-    global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, PATH_STATIONS
+    global introducing_song, intermission, intermission_counter, song_countdown, song_id, news
     print(station_data["name"])
 
     if introducing_song:
@@ -110,7 +110,7 @@ def play_split_station(station_data):
                 play.track_intro(PATH_STATIONS, station_data["src"], song_id)
 
 def play_talkshow_station(station_data):
-    global introducing_song, intermission, intermission_counter, song_countdown, song_id, news
+    global intermission, intermission_counter
     print(station_data["name"])
 
     if intermission:
@@ -150,8 +150,6 @@ def play_unsplit_station(station_data):
 
 #Main loop stuff
 def play_station():
-    #global stations_dict, selected_station
-
     current_station = stations_dict[selected_station]
     
     if current_station["type"] == 0:
