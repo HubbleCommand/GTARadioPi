@@ -38,10 +38,10 @@ stations = [
     {"type" : 1, "name" : "Self-Actualization FM",      "src" : "N_MED",    "icon" : "self-actu.png"},
     {"type" : 0, "name" : "The Classics 104.1",         "src" : "O_NYCL",   "icon" : "theclassics_bw.png"},
     {"type" : 2, "name" : "Public Liberty Radio",       "src" : "P_PLR",    "icon" : "plr_bw.png"},
-    {"type" : 0, "name" : "RamJam FM",                  "src" : "Q_RJFM",   "icon" : "NONE SELECTED.png"}, #TODO get icon
+    {"type" : 0, "name" : "RamJam FM",                  "src" : "Q_RJFM",   "icon" : "NONE SELECTED.png"},
     {"type" : 1, "name" : "San Juan Sounds",            "src" : "R_SJS",    "icon" : "sanjuan_bw.png"},
     {"type" : 1, "name" : "The Vibe 98.8",              "src" : "S_VIBE",   "icon" : "thevibe_bw.png"},
-    {"type" : 1, "name" : "Vice City FM",               "src" : "T_VCFM",   "icon" : "NONE SELECTED.png"}, #TODO get icon
+    {"type" : 1, "name" : "Vice City FM",               "src" : "T_VCFM",   "icon" : "NONE SELECTED.png"},
     {"type" : 1, "name" : "Vladivostok FM",             "src" : "U_VLAD",   "icon" : "vladivostok_bw.png"},
     {"type" : 2, "name" : "WKTT Radio",                 "src" : "V_WKTT",   "icon" : "wktt_bw.png"},
 ]
