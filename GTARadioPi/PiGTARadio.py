@@ -14,18 +14,10 @@ from state import current_station, current_station_state, root_dir, make_default
 pygame.init()
 pygame.mixer.init()
 
-### Configurable Variables ###
 ##############################
-#Dimensions of TFT screen on Pi
 WIDTH  = 480
 HEIGHT = 320
-
-#FOR DEPLOYED VERSION, use
-#SCREEN = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
-SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-
-PATH = "E:/audio"
-
+SCREEN = pygame.display.set_mode((WIDTH, HEIGHT)) #For fullscreen, add ´, pygame.FULLSCREEN)´
 ##############################
 
 PATH_STATIONS = PATH + "/STATIONS/"
