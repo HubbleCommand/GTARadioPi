@@ -2,8 +2,6 @@ import os
 from mutagen.wave import WAVE
 from mutagen.oggvorbis import OggVorbis
 import pygame
-from enum import Enum
-import json
 import random
 
 def count_files(src) -> int:

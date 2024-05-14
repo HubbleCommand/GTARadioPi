@@ -1,3 +1,4 @@
+#TODO remove
 #type is 0,1,2 (unsplit, split, talkshow)
 stations = [
     #GTA V Stations

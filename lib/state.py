@@ -1,5 +1,5 @@
 ### Utility methods for managing the main application state """
-import files
+import lib.files as files
 from random import randint
 
 def make_default_state(root_dir: str) -> dict:

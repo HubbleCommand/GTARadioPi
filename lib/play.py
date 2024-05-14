@@ -3,7 +3,7 @@
 from genericpath import isfile
 #Now just using pygame as keyboard is hella buggy, and lags other parts of the computer!
 from random import randint
-import files
+import lib.files as files
 import os
 
 def advert(path):

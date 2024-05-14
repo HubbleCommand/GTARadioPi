@@ -4,12 +4,12 @@ import pygame
 import pygame_gui #https://pygame-gui.readthedocs.io/en/latest/quick_start.html
 import argparse
 
-import buttons
-import display
-import volume
-import files
-import play
-from state import current_station, current_station_state, root_dir, make_default_state
+import lib.buttons as buttons
+import lib.display as display
+import lib.volume as volume
+import lib.files as files
+import lib.play as play
+from lib.state import current_station, current_station_state, root_dir, make_default_state
 
 pygame.init()
 pygame.mixer.init()
