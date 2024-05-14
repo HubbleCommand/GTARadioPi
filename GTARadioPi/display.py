@@ -86,8 +86,7 @@ def display_song_name(screen, song_name):
         song_name = ""
         #return
 
-    print("TRYING TO DISPLAY TRACK NAME")
-    print(song_name)
+    print("Will display track name: ", song_name)
     #img = song_font.render("S : " +song_name, True, (255, 255, 255))
     img = song_font.render("  " + song_name, True, (255, 255, 255))
 
@@ -109,8 +108,7 @@ def display_artist_name(screen, artist_name):
     global song_font
     #return
     #We display the song name at a fixed position...
-    print("TRYING TO DISPLAY ARTIST")
-    print(artist_name)
+    print("Will display artist: ", artist_name)
     #img = song_font.render("A : " + str(artist_name), True, (255, 255, 255))
     img = song_font.render("  " + str(artist_name), True, (255, 255, 255))
 
