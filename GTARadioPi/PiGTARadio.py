@@ -163,10 +163,8 @@ def stop():
     pygame.mixer.music.stop()
 
 def switch_station(up):
-    global selected_station
-    global stations_dict
+    global selected_station, introducing_song, intermission, song_countdown
     stop()
-    global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, PATH_STATIONS, SCREEN
     intermission = False
     introducing_song = False
     song_countdown = 5
@@ -189,7 +187,7 @@ def switch_station(up):
     play_station()
 
 def change_song(next):
-    global introducing_song, intermission, intermission_counter, song_countdown, song_id, news, PATH_STATIONS, stations_dict, selected_station
+    global intermission, song_id, stations_dict
 
     if stations_dict[selected_station]["type"] == 0:
         if not "pos" in stations_dict[selected_station]:
@@ -259,7 +257,6 @@ def change_song(next):
 #Button setup
 clock = pygame.time.Clock()
 manager = pygame_gui.UIManager((WIDTH, HEIGHT))
-
 window_size = pygame.display.get_window_size()
 
 vol_up_button = buttons.build_volume_up_button(manager, window_size)
