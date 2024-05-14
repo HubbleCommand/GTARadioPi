@@ -5,7 +5,7 @@ import pygame
 from enum import Enum
 import json
 
-def count_files(src):
+def count_files(src) -> int:
     count = len([name for name in os.listdir(src) if os.path.isfile(os.path.join(src, name))])
     print("count: ", count)
     return count
@@ -27,12 +27,12 @@ def get_track_object(path):
         print("Returning ogg")
         return OggVorbis(path)
 
-def get_track_name(path):
+def get_track_name(path) -> str:
     audio = WAVE(path)
     print("Track Name: ", audio.tags["TIT2"], " | ", str(audio.tags["TIT2"]))
     return str(audio.tags["TIT2"])
 
-def get_track_artist(path):
+def get_track_artist(path) -> str:
     audio = WAVE(path)
     return str(audio.tags["TPE1"])
 
@@ -66,7 +66,7 @@ def determine_station_type(path: str) -> Station|int:
     
     return -1
 
-def load_path(path: str) -> dict:
+def load_path(path: str) -> list:
     if not os.path.exists(path) or not os.path.exists(os.path.join(path, "STATIONS")):
         print("BAD")
         return {}
