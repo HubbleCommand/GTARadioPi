@@ -49,21 +49,16 @@ def read_station_name(path: str) -> str:
     file.close()
     return name
 
-class Station(Enum):
-    UNSPLIT = 0
-    SPLIT = 1
-    TALKSHOW = 2
-#Station = Enum('Station', ['UNSPLIT', 'SPLIT', 'TALKSHOW'])
-def determine_station_type(path: str) -> Station|int:
+def determine_station_type(path: str) -> int:
     #type is 0,1,2 (unsplit, split, talkshow)
     if os.path.exists(os.path.join(path, "SRC.wav")):
-        return 0 #Station.UNSPLIT
+        return 0
     
     if os.path.exists(os.path.join(path, "SONGS")):
-        return 1#Station.SPLIT
+        return 1
     
     if os.path.exists(os.path.join(path, "MONO")):
-        return 2#Station.TALKSHOW
+        return 2
     
     return -1
 
