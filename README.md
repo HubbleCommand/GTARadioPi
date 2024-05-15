@@ -1,10 +1,6 @@
 # GTARadioPi
 Pi / Python version of the GTA Radio. UI done with PyGame, may be switched to [Kivy](https://kivy.org/) in the future.
 
-NOTE: some of the original diffs are on master branch isntead of main cause vscode
-
-NOTE: Stations 8 & 11 in GTA IV were for user-made stations
-
 ## Usage
 `python main.py -d "absolute/path/to/audio"`
 
@@ -16,7 +12,7 @@ The state object is structured as follows:
 {
     //Currently selected station
     "current": int
-    "roor": str     //Root path
+    "root": str     //Root path to the audio files
     "stations":[    //List of stations
         "type": int //Type of station, 0,1,2 (unsplit, split, talkshow)
         "name": str //Name of the station
@@ -26,7 +22,7 @@ The state object is structured as follows:
 }
 ```
 
-For unsplit stations, 
+For unsplit stations, two states are kept to keep track of the seek state, and also for allowing for skipping ahead.
 
 For split and talkshow stations, which share a fairly similar structure and state management:
 ```
@@ -38,3 +34,7 @@ For split and talkshow stations, which share a fairly similar structure and stat
     "introducing_track":bool    //If currently introducing next track (only type 1)          
 }
 ```
+
+## Notes
+- some of the original diffs are on master branch isntead of main cause vscode
+- Stations 8 & 11 in GTA IV were for user-made stations
