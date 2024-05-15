@@ -6,8 +6,7 @@ NOTE: some of the original diffs are on master branch isntead of main cause vsco
 NOTE: Stations 8 & 11 in GTA IV were for user-made stations
 
 ## Usage
-When launching the script, you can either use the -d command to specify the path to the audio files, or change the PATH variable directly in the script.
-You can also change the screen size in the same way, either with the --width/--height arguments or the WIDTH/HEIGHT variables.
+`python main.py -d "absolute/path/to/audio"`
 
 ## Design
 A single state object is passed around, which functions will either read from (i.e. to get the curent audio to play), or will change the state (i.e. going to next track) before returning the updated state.
