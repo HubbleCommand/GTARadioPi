@@ -6,13 +6,11 @@ import random
 
 def count_files(src) -> int:
     count = len([name for name in os.listdir(src) if os.path.isfile(os.path.join(src, name))])
-    print("count: ", count)
     return count
 
 def play_file(path):
     #Anytime we want to play a file, we unload the previously loaded file
     pygame.mixer.music.unload()
-
     pygame.mixer.music.load(path)
     pygame.mixer.music.play()
 
@@ -62,7 +60,6 @@ def determine_station_type(path: str) -> int:
 
 def load_path(path: str) -> list:
     if not os.path.exists(path) or not os.path.exists(os.path.join(path, "STATIONS")):
-        print("BAD")
         return {}
     
     dirs = [dir for dir in os.listdir(path) if os.path.isdir(os.path.join(path, dir))]
@@ -83,20 +80,19 @@ def load_path(path: str) -> list:
             state = {}
         elif type == 1:
             state = {
-                #"intermission": bool(random.getrandbits(1)),
-                "intermission": True,
+                "intermission": bool(random.getrandbits(1)),
                 "news":  bool(random.getrandbits(1)),
-                "intermission_cnt": 3,
-                "track_countdown": 1, ##only type 1 ?
+                "intermission_cnt": random.randint(2, 6),
+                "track_countdown": random.randint(2, 3),
                 
                 "introducing_track": False,
                 "track_id": 1,
             }
-        elif type == 2: #pretty sure it's the same? just some slight variations in number of ads etc
+        elif type == 2:
             state = {
                 "intermission": bool(random.getrandbits(1)),
                 "news":  bool(random.getrandbits(1)),
-                "intermission_cnt": 5,
+                "intermission_cnt": random.randint(4, 7),
                 
                 "track_id": 1,
             }
